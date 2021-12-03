@@ -1,0 +1,36 @@
+compile:
+flex -o lex.yy.c <filename>
+gcc -o <filename> lex.yy.c -lfl
+
+. # all thing except \n
+* # zero or more times
++ # one or more times
+? # zero or 1 times
+[] # list a set if no "^"; list a inverse set if "^"
+^ # matches the beginning of a isNewLine
+$ # match the end of a line
+| # or [ab] == a|b
+\ # escape character
+{} # bound times, used method -> {lower_bounds[, upper_bounds]}
+"..." # mark  literally
+() # group a serie of REs into a new RE
+
+yyout -> use file to output
+yyin -> use file to input
+yytext -> store the matched token
+yyleng -> store the length of the matched token
+
+FOLLOW
+1. Place $ in FOLLOW(S), where S is the start symbol, and $ is the input right end-marker.
+2. if there is a production A → α B β, then everything in FIRST(β) except λ is in FOLLOW(B).
+3.  (a) if there is a production A → α B, 
+    (b) or A → α B β, where FIRST(β) contains λ,
+        then everything in FOLLOW(A) is in FOLLOW(B).
+
+FIRST
+1. If x is a terminal, then FIRST(x) = { ‘x’ }
+2. If x-> Є, is a production rule, then add Є to FIRST(x).
+3. If X->Y1 Y2 Y3….Yn is a production, 
+    - FIRST(X) = FIRST(Y1)
+    - If FIRST(Y1) contains Є then FIRST(X) = { FIRST(Y1) – Є } U { FIRST(Y2) }
+    - If FIRST (Yi) contains Є for all i = 1 to n, then add Є to FIRST(X).
